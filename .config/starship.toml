@@ -1,0 +1,61 @@
+format = """
+$username\
+@\
+$hostname\
+\\$ \
+\n"""
+
+right_format = """
+$directory \
+$git_branch\
+$git_status \ 
+$cmd_duration"""
+
+
+[username]
+show_always = true
+format = '[$user]($style)'
+style_user = 'fg:color_fg0'
+
+[hostname]
+ssh_only = false
+format = '[$hostname]($style)'
+style = 'fg:color_fg0'
+
+[character]
+format = ""
+success_symbol = ''
+error_symbol = ''
+
+[directory]
+format = '[$path]($style)'
+style = "fg:color_aqua"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
+
+[git_branch]
+style = "fg:color_yellow"
+disabled = false
+symbol = ""
+format = '( | [$symbol]($style) $branch)'
+
+[git_status]
+disabled = false
+style = "fg:color_orange"
+format = '( [$all_status]($style))'
+
+[cmd_duration]
+min_time = 0
+format = '[$duration]($style)'
+style = 'fg:color_yellow'
+
+[time]
+disabled = false
+time_format = "%R"
+format = '$time'

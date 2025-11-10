@@ -1,0 +1,7 @@
+[user]
+	name = tavanth
+	email = tavanthlee@outlook.com
+[core]
+	editor = neovim
+[color]
+	ui = true

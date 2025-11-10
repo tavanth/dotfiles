@@ -1,0 +1,8 @@
+.DS_Store
+*.swp
+.zcompdump*
+.zsh_history
+.cache/
+.local/
+.Trash/
+
