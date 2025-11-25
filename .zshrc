@@ -37,3 +37,4 @@ zinit light starship/starship
 
 ### End of Zinit's installer chunk
 alias v='nvim'
+export PATH="$HOME/.local/bin:$PATH"
