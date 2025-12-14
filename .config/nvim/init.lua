@@ -1,3 +1,4 @@
+vim.opt.guicursor = 'i:block'
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true
@@ -51,14 +52,6 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
-
-vim.api.nvim_create_autocmd('TextYankPost', {
-  desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
-  callback = function()
-    vim.hl.on_yank()
-  end,
-})
 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -173,6 +166,7 @@ require('lazy').setup({
       map('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       map('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files' })
       map('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>z', '<cmd>ZenMode<cr>', { silent = true, desc = 'Toggle Zen Mode' })
       map('n', '<leader>/', function()
         builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown { winblend = 10, previewer = false })
       end, { desc = '[/] Fuzzily search in current buffer' })
@@ -361,7 +355,73 @@ require('lazy').setup({
       signature = { enabled = true },
     },
   },
-  'datsfilipe/vesper.nvim',
+  {
+    'datsfilipe/vesper.nvim',
+    config = function()
+      require('vesper').setup {
+        transparent = false,
+        italics = {
+          comments = false,
+          keywords = false,
+          functions = false,
+          strings = false,
+          variables = false,
+        },
+        overrides = {},
+        palette_overrides = {},
+      }
+      vim.cmd 'colorscheme vesper'
+    end,
+  },
+  {
+    'folke/zen-mode.nvim',
+    opts = {
+      {
+        window = {
+          backdrop = 0.95, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
+          width = 120, -- width of the Zen window
+          height = 1, -- height of the Zen window
+          options = {
+            -- signcolumn = "no", -- disable signcolumn
+            -- number = false, -- disable number column
+            -- relativenumber = false, -- disable relative numbers
+            -- cursorline = false, -- disable cursorline
+            -- cursorcolumn = false, -- disable cursor column
+            -- foldcolumn = "0", -- disable fold column
+            -- list = false, -- disable whitespace characters
+          },
+        },
+        plugins = {
+          options = {
+            enabled = true,
+            ruler = false, -- disables the ruler text in the cmd line area
+            showcmd = false, -- disables the command in the last line of the screen
+            -- you may turn on/off statusline in zen mode by setting 'laststatus'
+            -- statusline will be shown only if 'laststatus' == 3
+            laststatus = 0, -- turn off the statusline in zen mode
+          },
+          twilight = { enabled = true }, -- enable to start Twilight when zen mode opens
+          gitsigns = { enabled = false }, -- disables git signs
+          tmux = { enabled = false }, -- disables the tmux statusline
+          todo = { enabled = false }, -- if set to "true", todo-comments.nvim highlights will be disabled
+          -- this will change the scale factor in Neovide when in zen mode
+          -- See alse also the Plugins/Wezterm section in this projects README
+          neovide = {
+            enabled = false,
+            scale = 1.2,
+            disable_animations = {
+              neovide_animation_length = 0,
+              neovide_cursor_animate_command_line = false,
+              neovide_scroll_animation_length = 0,
+              neovide_position_animation_length = 0,
+              neovide_cursor_animation_length = 0,
+              neovide_cursor_vfx_mode = '',
+            },
+          },
+        },
+      },
+    },
+  },
   {
     'folke/todo-comments.nvim',
     event = 'VimEnter',
@@ -425,7 +485,6 @@ require('lazy').setup({
       statusline.section_location = function()
         return '%2l:%-2v'
       end
-
       vim.cmd [[
 hi StatusLine guibg=NONE ctermbg=NONE
 hi StatusLineNC guibg=NONE ctermbg=NONE]]
