@@ -37,21 +37,20 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
-vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
-vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
-vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
-vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
-
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
--- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
--- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
--- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
--- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'html', 'css', 'javascript', 'typescript', 'json' },
+  callback = function()
+    vim.opt_local.tabstop = 2
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.softtabstop = 2
+    vim.opt_local.expandtab = true
+  end,
+})
 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -130,6 +129,11 @@ require('lazy').setup({
     config = function()
       require('nvim-autopairs').setup {}
     end,
+  },
+  {
+    'windwp/nvim-ts-autotag',
+    event = 'InsertEnter',
+    opts = {},
   },
   {
     'nvim-telescope/telescope.nvim',
@@ -248,7 +252,6 @@ require('lazy').setup({
           end
         end,
       })
-
       vim.diagnostic.config {
         severity_sort = true,
         float = { border = 'rounded', source = 'if_many' },
@@ -272,15 +275,18 @@ require('lazy').setup({
 
       local capabilities = require('blink.cmp').get_lsp_capabilities()
       local servers = {
+        ts_ls = {},
         clangd = {},
         rust_analyzer = {},
+        html = {},
+        cssls = {},
         lua_ls = {
           settings = { Lua = { completion = { callSnippet = 'Replace' } } },
         },
       }
 
       local ensure_installed = vim.tbl_keys(servers)
-      vim.list_extend(ensure_installed, { 'stylua' })
+      vim.list_extend(ensure_installed, { 'stylua', 'prettierd' })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
@@ -294,6 +300,18 @@ require('lazy').setup({
           end,
         },
       }
+    end,
+  },
+  {
+    'zenbones-theme/zenbones.nvim',
+    --dependencies = 'rktjmp/lush.nvim',
+    lazy = false, -- load at startup so the colorscheme is available immediately
+    priority = 1000, -- load before other plugins to avoid flash of wrong colors
+    config = function()
+      vim.g.zenbones_compat = 1
+      vim.opt.termguicolors = true
+      vim.o.background = 'dark' -- or "light"
+      vim.cmd.colorscheme 'zenbones'
     end,
   },
   {
@@ -321,7 +339,9 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         cpp = { 'clang_format' },
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascript = { 'prettierd', stop_after_first = true },
+        html = { 'prettierd', stop_after_first = true },
+        css = { 'prettierd', stop_after_first = true },
       },
     },
   },
@@ -354,24 +374,6 @@ require('lazy').setup({
       fuzzy = { implementation = 'lua' },
       signature = { enabled = true },
     },
-  },
-  {
-    'datsfilipe/vesper.nvim',
-    config = function()
-      require('vesper').setup {
-        transparent = false,
-        italics = {
-          comments = false,
-          keywords = false,
-          functions = false,
-          strings = false,
-          variables = false,
-        },
-        overrides = {},
-        palette_overrides = {},
-      }
-      vim.cmd 'colorscheme vesper'
-    end,
   },
   {
     'folke/zen-mode.nvim',
@@ -429,79 +431,17 @@ require('lazy').setup({
     opts = { signs = false },
   },
   {
-    'echasnovski/mini.nvim',
+    'shellRaining/hlchunk.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
     config = function()
-      require('mini.ai').setup { n_lines = 500 }
-      require('mini.surround').setup()
-
-      -- Setup mini.files
-      require('mini.files').setup {
-        content = {
-          filter = nil,
-          prefix = nil,
-          sort = nil,
+      require('hlchunk').setup {
+        chunk = {
+          enable = true,
         },
-        mappings = {
-          close = 'q',
-          go_in = 'l',
-          go_in_plus = 'L',
-          go_out = 'h',
-          go_out_plus = 'H',
-          mark_goto = "'",
-          mark_set = 'm',
-          reset = '<BS>',
-          reveal_cwd = '@',
-          show_help = 'g?',
-          synchronize = '=',
-          trim_left = '<',
-          trim_right = '>',
-        },
-        options = {
-          permanent_delete = true,
-          use_as_default_explorer = true,
-        },
-        windows = {
-          max_number = math.huge,
-          preview = false,
-          width_focus = 50,
-          width_nofocus = 15,
-          width_preview = 25,
+        line_num = {
+          enable = true,
         },
       }
-
-      -- Mini.files keymaps
-      vim.keymap.set('n', '<leader>e', function()
-        require('mini.files').open(vim.api.nvim_buf_get_name(0))
-      end, { desc = 'Open mini.files (current file)' })
-
-      vim.keymap.set('n', '<leader>E', function()
-        require('mini.files').open()
-      end, { desc = 'Open mini.files (cwd)' })
-
-      -- Setup statusline
-      local statusline = require 'mini.statusline'
-      statusline.setup { use_icons = vim.g.have_nerd_font }
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
-      vim.cmd [[
-hi StatusLine guibg=NONE ctermbg=NONE
-hi StatusLineNC guibg=NONE ctermbg=NONE]]
-
-      vim.api.nvim_create_autocmd('ColorScheme', {
-        pattern = '*',
-        callback = function()
-          vim.cmd [[
-  hi StatusLine guibg=NONE ctermbg=NONE
-  hi StatusLineNC guibg=NONE ctermbg=NONE
-  ]]
-          vim.api.nvim_set_hl(0, 'MiniStatuslineDevinfo', { bg = 'NONE' })
-          vim.api.nvim_set_hl(0, 'MiniStatuslineFileinfo', { bg = 'NONE' })
-          vim.api.nvim_set_hl(0, 'MiniStatuslineFilename', { bg = 'NONE' })
-          vim.api.nvim_set_hl(0, 'MiniStatuslineInactive', { bg = 'NONE' })
-        end,
-      })
     end,
   },
   {
@@ -509,7 +449,22 @@ hi StatusLineNC guibg=NONE ctermbg=NONE]]
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs',
     opts = {
-      ensure_installed = { 'bash', 'c', 'cpp', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'cpp',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'typescript',
+        'javascript',
+        'query',
+        'vim',
+        'vimdoc',
+      },
       auto_install = true,
       highlight = { enable = true, additional_vim_regex_highlighting = { 'ruby' } },
       indent = { enable = true, disable = { 'ruby' } },
@@ -518,21 +473,7 @@ hi StatusLineNC guibg=NONE ctermbg=NONE]]
   { import = 'custom.plugins' },
 }, {
   ui = {
-    icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
-    },
+    icons = vim.g.have_nerd_font and {} or {},
   },
 })
 -- vim: ts=2 sts=2 sw=2 et
