@@ -1,0 +1,13 @@
+.DS_Store
+*.swp
+.zcompdump*
+.zsh_history
+.cache/
+.local/
+.Trash/
+.gitconfig
+.config/nvim/node_modules/
+.config/nvim/npm-debug.log*
+.config/nvim/yarn-debug.log*
+.config/nvim/yarn-error.log*
+.config/nvim/pnpm-debug.log*
