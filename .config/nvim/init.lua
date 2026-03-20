@@ -303,17 +303,29 @@ require('lazy').setup({
     end,
   },
   {
-    'zenbones-theme/zenbones.nvim',
-    --dependencies = 'rktjmp/lush.nvim',
-    lazy = false, -- load at startup so the colorscheme is available immediately
-    priority = 1000, -- load before other plugins to avoid flash of wrong colors
-    config = function()
-      vim.g.zenbones_compat = 1
-      vim.opt.termguicolors = true
-      vim.o.background = 'dark' -- or "light"
-      vim.cmd.colorscheme 'zenbones'
+    'webhooked/kanso.nvim',
+    lazy = false,
+    priority = 1000,
+    opts = {
+      minimal = false,
+    },
+    config = function(_, opts)
+      require('kanso').setup(opts)
+      vim.cmd.colorscheme 'kanso'
     end,
   },
+  -- {
+  --   'zenbones-theme/zenbones.nvim',
+  --dependencies = 'rktjmp/lush.nvim',
+  --   lazy = false, -- load at startup so the colorscheme is available immediately
+  --   priority = 1000, -- load before other plugins to avoid flash of wrong colors
+  --   config = function()
+  --    vim.g.zenbones_compat = 1
+  --    vim.opt.termguicolors = true
+  --    vim.o.background = 'dark' -- or "light"
+  --    vim.cmd.colorscheme 'zenbones'
+  --  end,
+  --},
   {
     'stevearc/conform.nvim',
     event = 'BufWritePre',
