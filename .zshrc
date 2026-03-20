@@ -40,3 +40,5 @@ alias v='nvim'
 export PATH="$HOME/.local/bin:$PATH"
 source $HOME/.cargo/env
 source $HOME/.cargo/env
+export DRIFT_TIMEOUT=120
+eval "$(drift shell-init zsh)"
