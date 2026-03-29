@@ -5,8 +5,11 @@ $hostname\
 \\$ \
 \n"""
 
+# for right format
+#$directory \
+
+
 right_format = """
-$directory \
 $git_branch\
 $git_status \ 
 $cmd_duration"""
