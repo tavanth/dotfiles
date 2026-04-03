@@ -15,7 +15,7 @@ opt.wrap = true
 opt.scrolloff = 8
 opt.undofile = true
 opt.completeopt = { "menuone", "popup", "noinsert" }
-opt.winborder = "single"
+opt.winborder = "double"
 opt.signcolumn = "yes:1"
 opt.list = true
 opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
