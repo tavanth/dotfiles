@@ -1,6 +1,6 @@
 # dotfiles
 
-Personal macOS dotfiles, managed with [GNU Stow](https://www.gnu.org/software/stow/) for clean, modular symlink management.
+Personal macOS dotfiles, managed with gnuStow/Homebrew for clean symlink management.
 
 ## Overview
 
@@ -8,9 +8,8 @@ Each package mirrors the directory structure it needs relative to `$HOME` (e.g. 
 
 ## Prerequisites
 
-- [GNU Stow](https://www.gnu.org/software/stow/)
+- GNU Stow
 - Git
-- macOS apps listed
 
 Install Stow:
 
