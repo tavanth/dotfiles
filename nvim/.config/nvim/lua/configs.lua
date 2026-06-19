@@ -1,6 +1,7 @@
 local opt = vim.opt
 
 opt.guicursor = "i:block"
+opt.clipboard = "unnamed"
 opt.termguicolors = true
 opt.ignorecase = true
 opt.swapfile = false
@@ -18,7 +19,5 @@ opt.completeopt = { "menuone", "popup", "noinsert" }
 opt.winborder = "double"
 opt.signcolumn = "yes:1"
 opt.list = true
-opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
-
 vim.cmd.filetype("plugin indent on")
 vim.cmd.colorscheme("kanso")

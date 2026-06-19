@@ -29,7 +29,7 @@ vim.pack.add({
 	{ src = "https://github.com/leoluz/nvim-dap-go" },
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
 })
-require("kanso").setup({ minimal = false })
+require("kanso").setup({ minimal = false, italics = false })
 
 require("mason").setup({})
 

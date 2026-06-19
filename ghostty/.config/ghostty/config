@@ -1,4 +1,7 @@
-macos-icon = paper
+macos-icon = custom-style
+macos-icon-frame = plastic
+macos-icon-ghost-color = #000000
+macos-icon-screen-color = #FFFFFF
 macos-shortcuts = allow
 font-family = GeistMono NFM
 font-thicken = true

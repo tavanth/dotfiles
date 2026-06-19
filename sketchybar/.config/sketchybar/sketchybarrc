@@ -1,0 +1,50 @@
+#!/bin/bash
+sketchybar --bar position=top height=32 color=0x00000000 padding_left=10 padding_right=10 \
+                 corner_radius=0 margin=0 y_offset=0 blur_radius=0 font_smoothing=on
+sketchybar --default updates=when_shown \
+                      icon.font="MonaspiceNe Nerd Font:Bold:14.0" \
+                      icon.color=0xff1d1d1f \
+                      label.font="SF Pro:Semibold:13.0" \
+                      label.color=0xff1d1d1f \
+                      padding_left=5 \
+                      padding_right=5
+sketchybar --add event aerospace_workspace_change \
+           --add item aerospace left \
+           --set aerospace updates=on \
+                           icon.drawing=off \
+                           label.font="SF Pro:Semibold:13.0" \
+                           label.padding_right=6 \
+                           script="$CONFIG_DIR/plugins/aerospace.sh" \
+           --subscribe aerospace aerospace_workspace_change \
+           --add item front_app left \
+           --set front_app updates=on \
+                           icon.font="sketchybar-app-font:Regular:16.0" \
+                           icon.color=0xff1d1d1f \
+                           icon.padding_right=6 \
+                           label="Code" \
+                           label.padding_right=4 \
+                           script="$CONFIG_DIR/plugins/front_app.sh" \
+           --add item file_label left \
+           --set file_label updates=on \
+                             label.color=0xff6e6e73 \
+                             label.font="SF Pro:Regular:12.0" \
+                             icon.drawing=off \
+                             update_freq=2 \
+                             script="$CONFIG_DIR/plugins/front_app.sh" \
+           --subscribe front_app front_app_switched aerospace_workspace_change \
+           --subscribe file_label front_app_switched aerospace_workspace_change
+sketchybar --add item clock right \
+           --set clock update_freq=10 \
+                       icon.drawing=off \
+                       label.font="SF Pro:Semibold:13.0" \
+                       label.color=0xff1d1d1f \
+                       script="$CONFIG_DIR/plugins/clock.sh" \
+           --add item status_dot right \
+           --set status_dot icon=● \
+                             icon.color=0xff4FC3F8 \
+                             icon.font="SF Pro:Bold:8.0" \
+                             label.drawing=off \
+                             padding_left=2 \
+                             padding_right=6
+sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE="$(/opt/homebrew/bin/aerospace list-workspaces --focused)"
+sketchybar --update
