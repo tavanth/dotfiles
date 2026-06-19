@@ -1,8 +1,0 @@
-[user]
-	name = tavanth
-	email = tavanthlee@outlook.com
-[core]
-	editor = neovim
-	excludesfile = /Users/c/.gitignore_global
-[color]
-	ui = true
