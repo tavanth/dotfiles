@@ -22,7 +22,7 @@ brew install stow
 Clone the repo into your home directory and run the bootstrap script:
 
 ```bash
-git clone <your-repo-url> ~/.dotfiles
+git clone https://github.com/tavanth/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ./boot.sh
 ```
